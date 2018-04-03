@@ -1,0 +1,11 @@
+# Dataset file
+/data/*
+
+# Saved model parameters
+/log/*
+
+# Python
+__pycache__
+
+# Pickle
+*.pkl
