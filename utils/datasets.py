@@ -46,7 +46,7 @@ def create_dataset(label_type):
     Args:
         label_type (str): Type of label
 
-    Return:
+    Returns:
         out (dict): A dict contains image_datasets, dataloaders,
             dataset_sizes
     """

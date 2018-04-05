@@ -25,7 +25,7 @@ def datasets_tests():
     dataloaders = datasetd['dataloaders']
     for _, dataloader in dataloaders.items():
         next_batch = next(iter(dataloader))
-        assert_true(list(next_batch['image'].shape), [32, 2, 224, 224])
+        assert_equal(list(next_batch['image'].shape), [32, 3, 224, 224])
 
     
 

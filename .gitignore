@@ -10,3 +10,6 @@ __pycache__
 
 # Pickle
 *.pkl
+
+# ctags file
+tags

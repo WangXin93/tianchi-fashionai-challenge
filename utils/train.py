@@ -3,13 +3,14 @@ import copy
 import torch
 from torch.autograd import Variable
 
-use_gpu = torch.cuda.is_available()
+
 def train_model(model,
                 criterion,
                 optimizer,
                 scheduler,
                 dataloaders,
                 dataset_sizes,
+                use_gpu,
                 num_epochs=2):
     since = time.time()
 
