@@ -1,22 +1,23 @@
-from utils.predict import create_dataset, create_datasets, predict_model
+from utils.predict import predict_model
+from utils.dataset import create_dataset
+from utils.metric import mAP, AP, evaluate
 import torchvision
 from torch import nn
 import torch
 from torch.autograd import Variable
 import numpy as np
-import time
 import argparse
-from pathlib import Path
 import ipdb
 
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 
-parser = argparse.ArgumentParser(description='Write Answer')
+parser = argparse.ArgumentParser(description='Confusion Matrix')
 parser.add_argument('--model', type=str, default='resnet34', metavar='M',
                     help='model name')
 parser.add_argument('--save_folder', type=str, default='resnet34-transfer', metavar='S',
                     help='Subdir of ./log directory to save model.pth files')
 args = parser.parse_args()
-
 
 order = ['collar_design_labels',
          'neckline_design_labels',
@@ -38,15 +39,12 @@ AttrKey = {
     'sleeve_length_labels':9,
 }
 
-# Create dataloaders for 8 attributes
-out = create_datasets(order)
-dataloaders = out['dataloaders']
 
 results = {}
+labels_dict = {}
 
 saved_model = './log/' + args.save_folder + '/{}.pth'
-question = './questions/question_{}.csv'
-answer = './questions/answer.csv'
+val_file = './data/fashionAI/{}_test.csv'
 
 # Iterate each attributes
 for t in order:
@@ -63,20 +61,30 @@ for t in order:
     if use_gpu:
         model_conv = model_conv.cuda()
 
-    print('start write {}...'.format(t))
-    dataloader = dataloaders[t]
+    print('start analyze {}...'.format(t))
+    # Create dataloaders for 8 attributes
+    out = create_dataset(t)
+    dataloader = out['dataloader']
+
     result = predict_model(model_conv,
                            saved_model.format(t),
                            dataloader,
                            use_gpu)
     results[t] = result
 
-    # Read lines of question files
-    lines = open(question.format(t)).readlines()
-    assert len(lines) == len(result)
-    # Write to answer.csv
-    with open(answer, 'a') as ansf:
-        for line, probs in zip(lines, result):
-            # Change ? mark to probabilities
-            line = line.replace('?', ';'.join('{:.4f}'.format(i) for i in probs))
-            ansf.write(line)
+    # Get prediction indices
+    preds = [p.index(max(p)) for p in resullt]
+    # Get labels' indices of 'y'
+    df = pd.read_csv(val_file.format(t), names=['image','type','category'])
+    labels_dict[t] = df['category']
+    labels = [l.index('y') for l in df['category']]
+
+    print('confusion matrix ...')
+    print(confusion_matrix(labels, preds))
+    print('classification report ...')
+    print(classification_report(labels, preds))
+    print('Ali AP metric score ...')
+    print(AP(result, df['category']))
+
+#print('Ali mAP metric score ...')
+#print(mAP(results.values(), labels_dict.values()))

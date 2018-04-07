@@ -23,7 +23,8 @@ order = ['collar_design_labels',
 
 
 def create_question_csv(csv_file=csv_file):
-    """Divide question.csv into 8 part in terms of type
+    """Divide question.csv into 8 part in terms of type, and save 
+    them in the same directory as csv_file.
 
     Args:
         csv_file (str): Path of question.csv file.
