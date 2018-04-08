@@ -23,7 +23,8 @@ order = ['collar_design_labels',
 
 
 def create_question_csv(csv_file=csv_file):
-    """Divide question.csv into 8 part in terms of type
+    """Divide question.csv into 8 part in terms of type, and save 
+    them in the same directory as csv_file.
 
     Args:
         csv_file (str): Path of question.csv file.
@@ -66,20 +67,21 @@ class FashionAttrsDataset(Dataset):
         return sample
 
 
-def create_dataset(label_type):
+def create_dataset(label_type,
+                   csv_file=('/home/wangx/datasets/fashionAI/rank'
+                             '/Tests/question_{}.csv'),
+                   root_dir = '/home/wangx/datasets/fashionAI/rank'):
     """Create dataset, dataloader of single type for question.csv
 
     Args:
         label_type (str): Type of label
+        csv_file: csv_file pattern for 8 attributes
 
     Returns:
         A dict contains image_dataset, dataloader,
         dataset_size.
 
     """
-    csv_file = '/home/wangx/datasets/fashionAI/rank/Tests/question_{}.csv'
-    root_dir = '/home/wangx/datasets/fashionAI/rank'
-
     data_transforms = transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
@@ -99,7 +101,11 @@ def create_dataset(label_type):
             'dataset_size': dataset_size}
 
 
-def create_datasets(label_types):
+def create_datasets(label_types,
+                   csv_file=('/home/wangx/datasets/fashionAI/rank'
+                             '/Tests/question_{}.csv'),
+                   root_dir = '/home/wangx/datasets/fashionAI/rank'):
+
     """Create dataloaders for 8 types
     
     Args:
@@ -113,7 +119,7 @@ def create_datasets(label_types):
     dataloaders = {}
     dataset_sizes = {}
     for t in order:
-        out = create_dataset(t)
+        out = create_dataset(t, csv_file=csv_file, root_dir=root_dir)
         image_datasets[t] = out['image_dataset']
         dataloaders[t] = out['dataloader']
         dataset_sizes[t] = out['dataset_size']

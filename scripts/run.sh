@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 
 python3 bin/transfer_learning.py --attribute coat_length_labels; \
 python3 bin/transfer_learning.py --attribute collar_design_labels; \

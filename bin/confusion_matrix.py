@@ -1,19 +1,21 @@
-from utils.predict import create_dataset, create_datasets, predict_model
+from utils.predict import predict_model, create_datasets
+from utils.metric import mAP, AP, evaluate
 import torchvision
 from torch import nn
 import torch
 from torch.autograd import Variable
 import numpy as np
-import time
 import argparse
-from pathlib import Path
+import pandas as pd
 import ipdb
 
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 
-parser = argparse.ArgumentParser(description='Write Answer')
-parser.add_argument('--model', type=str, default='resnet34', metavar='M',
+parser = argparse.ArgumentParser(description='Confusion Matrix')
+parser.add_argument('--model', type=str, default='resnet18', metavar='M',
                     help='model name')
-parser.add_argument('--save_folder', type=str, default='resnet34-transfer', metavar='S',
+parser.add_argument('--save_folder', type=str, default='resnet18-zero', metavar='S',
                     help='Subdir of ./log directory to save model.pth files')
 args = parser.parse_args()
 
@@ -38,15 +40,18 @@ AttrKey = {
     'sleeve_length_labels':9,
 }
 
+saved_model = './log/' + args.save_folder + '/{}.pth'
+question = './data/fashionAI/{}_test.csv'
+root_dir='/home/wangx/datasets/fashionAI/base'
+
 # Create dataloaders for 8 attributes
-out = create_datasets(order)
+out = create_datasets(order,
+                      csv_file=question,
+                      root_dir=root_dir)
 dataloaders = out['dataloaders']
 
-results = {}
-
-saved_model = './log/' + args.save_folder + '/{}.pth'
-question = './questions/question_{}.csv'
-answer = './questions/answer.csv'
+labels_alphas = []
+results = []
 
 # Iterate each attributes
 for t in order:
@@ -71,14 +76,22 @@ for t in order:
                            saved_model.format(t),
                            dataloader,
                            use_gpu)
-    results[t] = result
+    preds = [p.argmax() for p in result]
+    df = pd.read_csv(question.format(t),
+                     names=['image', 'type', 'category'])
+    labels_alpha = df['category']
+    ground_truth = [l.index('y') for l in labels_alpha]
 
-    # Read lines of question files
-    lines = open(question.format(t)).readlines()
-    assert len(lines) == len(result)
-    # Write to answer.csv
-    with open(answer, 'a') as ansf:
-        for line, probs in zip(lines, result):
-            # Change ? mark to probabilities
-            line = line.replace('?', ';'.join('{:.4f}'.format(i) for i in probs))
-            ansf.write(line)
+    print('confusion matrix ...')
+    print(confusion_matrix(ground_truth, preds))
+    print('classification report ...')
+    print(classification_report(ground_truth, preds))
+    print('Ali AP metric score ...')
+    print(AP(result, labels_alpha))
+
+    # Save result for mAP
+    results.append(result)
+    labels_alphas.append(labels_alpha)
+
+print('\nAli mAP metric score ...')
+print(mAP(results, labels_alphas))
