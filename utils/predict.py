@@ -83,8 +83,7 @@ def create_dataset(label_type,
 
     """
     data_transforms = transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
+            transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(means[label_type], stds[label_type])
         ])

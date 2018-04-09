@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from PIL import Image
 from utils.mean_std import means, stds
+import Augmentor
 
 
 class FashionAttrsDataset(Dataset):
@@ -54,16 +55,40 @@ def create_dataset(label_type):
     csv_file = './data/fashionAI/{}_{}.csv'
     root_dir = '/home/wangx/datasets/fashionAI/base'
 
+#    data_transforms = {
+#        'train': transforms.Compose([
+#            transforms.RandomResizedCrop(224),
+#            transforms.RandomHorizontalFlip(),
+#            transforms.ToTensor(),
+#            transforms.Normalize(means[label_type], stds[label_type])
+#        ]),
+#        'test': transforms.Compose([
+#            transforms.Resize(256),
+#            transforms.CenterCrop(224),
+#            transforms.ToTensor(),
+#            transforms.Normalize(means[label_type], stds[label_type])
+#        ]),
+#    }
+    # Use Augmentor help produce more variation
+    p = Augmentor.Pipeline()
+    p.rotate(probability=0.5, max_left_rotation=10, max_right_rotation=5)
+    p.random_distortion(probability=0.5, grid_width=4, grid_height=4, magnitude=8)
+    # p.skew(probability=0.5, magnitude=0.1)
+
     data_transforms = {
         'train': transforms.Compose([
-            transforms.RandomResizedCrop(224),
+            p.torch_transform(),
+            transforms.Resize((224, 224)),
             transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(brightness=0.2,
+                                   contrast=0.2,
+                                   saturation=0.2,
+                                   hue=0.2),
             transforms.ToTensor(),
             transforms.Normalize(means[label_type], stds[label_type])
         ]),
         'test': transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
+            transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(means[label_type], stds[label_type])
         ]),
