@@ -1,4 +1,10 @@
-from utils.predict import predict_model, create_datasets
+#
+# Demo:
+# python3 bin/confusion_matrix.py
+#
+from utils.predict import predict_model
+from utils.datasets import create_dataset
+from utils.models import create_model
 from utils.metric import mAP, AP, evaluate
 import torchvision
 from torch import nn
@@ -82,19 +88,15 @@ label_names = {'skirt_length_labels': ['Invisible', 'Short', 'Knee', 'Midi',
                                           'One Shoulder',] ,
                'pant_length_labels': ['Invisible', 'Short Pant', 'Mid', '3/4',
                                       'Cropped Pant','Full',],
-               'sleeve_length_labels': ['Sleeveless', 'Cup', 'Short', # all visible
+               'sleeve_length_labels': ['Sleeveless', 'Cup', 'Short', # no invisible, all visible
                                         'Elbow', '3/4', 'Wrist',
                                         'Long', 'Extra Long',],
               }
 
 saved_model = './log/' + args.save_folder + '/{}.pth'
-question = './data/fashionAI/{}_test.csv'
+# Validation set with ground true labels
+question_file = './data/fashionAI/{}_{}.csv'
 root_dir='/home/wangx/datasets/fashionAI/base'
-
-# Create dataloaders for 8 attributes
-out = create_datasets(order,
-                      csv_file=question, root_dir=root_dir)
-dataloaders = out['dataloaders']
 
 labels_alphas = []
 results = []
@@ -103,30 +105,34 @@ fig, axs = plt.subplots(2, 4, figsize=(16, 8))
 
 # Iterate each attributes
 for idx, t in enumerate(order):
-    if args.model == 'resnet18':
-        model_conv = torchvision.models.resnet18()
-    elif args.model == 'resnet34':
-        model_conv = torchvision.models.resnet34()
-    elif args.model == 'resnet50':
-        model_conv = torchvision.models.resnet50()
-
-    # Parameters of newly constructed modules have requires_grad=True by default
-    num_ftrs = model_conv.fc.in_features
-    model_conv.fc = nn.Linear(num_ftrs, AttrKey[t])
+    out = create_dataset(t,
+                         csv_file=question_file,
+                         root_dir=root_dir,
+                         phase=['test'],
+                         label_mode='alpha',
+                         shuffle=False)
+    dataloader = out['dataloaders']['test']
 
     use_gpu = torch.cuda.is_available()
-    if use_gpu:
-        model_conv = model_conv.cuda()
+    model_conv = create_model(args.model,
+                              pretrained=False,
+                              num_of_classes=AttrKey[t],
+                              use_gpu=use_gpu)
 
+    ###############################
+    # Print classification report #
+    ###############################
     print('*'*70)
     print('start analyze {}...'.format(t))
-    dataloader = dataloaders[t]
     result = predict_model(model_conv,
                            saved_model.format(t),
                            dataloader,
                            use_gpu)
+    # Get prediction indices
     preds = [p.argmax() for p in result]
-    df = pd.read_csv(question.format(t),
+
+    # Read ground truth labels
+    df = pd.read_csv(question_file.format(t, 'test'),
                      names=['image', 'type', 'category'])
     labels_alpha = df['category']
     ground_truth = [l.index('y') for l in labels_alpha]
@@ -145,7 +151,6 @@ for idx, t in enumerate(order):
     labels_alphas.append(labels_alpha)
 
     # Draw heatmap
-    # plt.subplot(idx//4, idx%4)
     ax = axs[idx//4, idx%4]
     ax.set_title(t)
     sns.heatmap(cm,
@@ -159,5 +164,7 @@ for idx, t in enumerate(order):
 print('Ali mAP metric score ...')
 print(mAP(results, labels_alphas))
 
+# Save image of confusion matrix
 img_path = Path('log') / Path(args.save_folder) / Path('confusion_matrix.png')
+print('Image saved in {}'.format(img_path))
 plt.savefig(str(img_path))

@@ -1,4 +1,11 @@
-from utils.predict import create_dataset, create_datasets, predict_model
+#
+# Demo:
+# python3 bin/write_answer.py
+#
+
+from utils.predict import predict_model
+from utils.datasets import create_dataset
+from utils.models import create_model
 import torchvision
 from torch import nn
 import torch
@@ -15,6 +22,8 @@ parser.add_argument('--model', type=str, default='resnet34', metavar='M',
                     help='model name')
 parser.add_argument('--save_folder', type=str, default='resnet34-transfer', metavar='S',
                     help='Subdir of ./log directory to save model.pth files')
+parser.add_argument('--answer', type=str, default='answer', metavar='A',
+                    help='File name of answers relative to ./questions/ directory')
 args = parser.parse_args()
 
 
@@ -38,47 +47,42 @@ AttrKey = {
     'sleeve_length_labels':9,
 }
 
-# Create dataloaders for 8 attributes
-out = create_datasets(order)
-dataloaders = out['dataloaders']
-
-results = {}
-
 saved_model = './log/' + args.save_folder + '/{}.pth'
-question = './questions/question_{}.csv'
-answer = './questions/answer.csv'
+question_file = './questions/{}_{}.csv'
+root_dir = '/home/wangx/datasets/fashionAI/rank'
+answer = './questions/' + args.answer + '.csv'
 
 # Iterate each attributes
 for t in order:
-    if args.model == 'resnet18':
-        model_conv = torchvision.models.resnet18()
-    elif args.model == 'resnet34':
-        model_conv = torchvision.models.resnet34()
-    elif args.model == 'resnet50':
-        model_conv = torchvision.models.resnet50()
+    # Create dataloader for each attribute
+    out = create_dataset(t,
+                         csv_file=question_file,
+                         root_dir=root_dir,
+                         phase=['test'],
+                         label_mode='?',
+                         shuffle=False)
+    dataloader = out['dataloaders']['test']
 
-    # Parameters of newly constructed modules have requires_grad=True by default
-    num_ftrs = model_conv.fc.in_features
-    model_conv.fc = nn.Linear(num_ftrs, AttrKey[t])
-
+    # Create CNN model
     use_gpu = torch.cuda.is_available()
-    if use_gpu:
-        model_conv = model_conv.cuda()
+    model_conv = create_model(model_key=args.model,
+                              pretrained=False,
+                              num_of_classes=AttrKey[t],
+                              use_gpu=use_gpu)
 
     print('start write {}...'.format(t))
-    dataloader = dataloaders[t]
     result = predict_model(model_conv,
                            saved_model.format(t),
                            dataloader,
                            use_gpu)
-    results[t] = result
 
     # Read lines of question files
-    lines = open(question.format(t)).readlines()
+    lines = open(question_file.format(t, 'test')).readlines()
     assert len(lines) == len(result)
+
     # Write to answer.csv
-    with open(answer, 'a') as ansf:
+    with open(answer, 'a') as f:
         for line, probs in zip(lines, result):
             # Change ? mark to probabilities
             line = line.replace('?', ';'.join('{:.4f}'.format(i) for i in probs))
-            ansf.write(line)
+            f.write(line)
