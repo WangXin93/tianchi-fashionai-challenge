@@ -24,10 +24,7 @@ from sklearn.metrics import classification_report
 parser = argparse.ArgumentParser(description='Confusion Matrix')
 parser.add_argument('--model', type=str, default='resnet18', metavar='M',
                     help='model name')
-parser.add_argument('--save_folder', type=str, default='resnet18-zero', metavar='S',
-                    help='Subdir of ./log directory to save model.pth files')
 args = parser.parse_args()
-
 
 order = ['collar_design_labels',
          'neckline_design_labels',
@@ -47,6 +44,39 @@ AttrKey = {
     'pant_length_labels':6,
     'skirt_length_labels':6,
     'sleeve_length_labels':9,
+}
+
+ModelKey = {
+    'coat_length_labels':'resnet18',
+    'collar_design_labels':'inception_v3',
+    'lapel_design_labels':'inception_v3',
+    'neck_design_labels':'inception_v3',
+    'neckline_design_labels':'inception_v3',
+    'pant_length_labels':'resnet18',
+    'skirt_length_labels':'resnet18',
+    'sleeve_length_labels':'resnet18',
+}
+
+ImgSizeKey = {
+    'coat_length_labels':224,
+    'collar_design_labels':299,
+    'lapel_design_labels':299,
+    'neck_design_labels':299,
+    'neckline_design_labels':299,
+    'pant_length_labels':224,
+    'skirt_length_labels':224,
+    'sleeve_length_labels':224,
+}
+
+SaveFolderKey = {
+    'coat_length_labels':'resnet18-distort',
+    'collar_design_labels':'spam',
+    'lapel_design_labels':'spam',
+    'neck_design_labels':'spam',
+    'neckline_design_labels':'spam',
+    'pant_length_labels':'resnet18-distort',
+    'skirt_length_labels':'resnet18-distort',
+    'sleeve_length_labels':'resnet18-distort',
 }
 
 #label_names = {'skirt_length_labels': ['Invisible', 'Short Length', 'Knee Length', 'Midi Length',
@@ -93,7 +123,7 @@ label_names = {'skirt_length_labels': ['Invisible', 'Short', 'Knee', 'Midi',
                                         'Long', 'Extra Long',],
               }
 
-saved_model = './log/' + args.save_folder + '/{}.pth'
+saved_model = './log/{}/{}.pth'
 # Validation set with ground true labels
 question_file = './data/fashionAI/{}_{}.csv'
 root_dir='/home/wangx/datasets/fashionAI/base'
@@ -110,11 +140,12 @@ for idx, t in enumerate(order):
                          root_dir=root_dir,
                          phase=['test'],
                          label_mode='alpha',
-                         shuffle=False)
+                         shuffle=False,
+                         img_size=ImgSizeKey[t])
     dataloader = out['dataloaders']['test']
 
     use_gpu = torch.cuda.is_available()
-    model_conv = create_model(args.model,
+    model_conv = create_model(model_key=ModelKey[t],
                               pretrained=False,
                               num_of_classes=AttrKey[t],
                               use_gpu=use_gpu)
@@ -125,7 +156,7 @@ for idx, t in enumerate(order):
     print('*'*70)
     print('start analyze {}...'.format(t))
     result = predict_model(model_conv,
-                           saved_model.format(t),
+                           saved_model.format(SaveFolderKey[t], t),
                            dataloader,
                            use_gpu)
     # Get prediction indices
@@ -165,6 +196,6 @@ print('Ali mAP metric score ...')
 print(mAP(results, labels_alphas))
 
 # Save image of confusion matrix
-img_path = Path('log') / Path(args.save_folder) / Path('confusion_matrix.png')
+img_path = Path('./confusion_matrix.png')
 print('Image saved in {}'.format(img_path))
 plt.savefig(str(img_path))

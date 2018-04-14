@@ -5,7 +5,7 @@ import pandas as pd
 import os
 from PIL import Image
 from utils.mean_std import means, stds
-import Augmentor
+# import Augmentor
 import multiprocessing
 
 
@@ -59,7 +59,8 @@ def create_dataset(label_type,
                    root_dir = '/home/wangx/datasets/fashionAI/base',
                    phase = ['train', 'test'],
                    label_mode='index',
-                   shuffle=True):
+                   shuffle=True,
+                   img_size=224):
     """Create dataset, dataloader for train and test
 
     Args: label_type (str): Type of label
@@ -73,14 +74,14 @@ def create_dataset(label_type,
     """
 
     # Use Augmentor help produce more variation
-    p = Augmentor.Pipeline()
-    p.rotate(probability=0.5, max_left_rotation=10, max_right_rotation=5)
-    p.random_distortion(probability=0.5, grid_width=4, grid_height=4, magnitude=8)
+    #p = Augmentor.Pipeline()
+    #p.rotate(probability=0.5, max_left_rotation=5, max_right_rotation=5)
+    #p.random_distortion(probability=0.5, grid_width=4, grid_height=4, magnitude=8)
 
     data_transforms = {
         'train': transforms.Compose([
-#            p.torch_transform(),
-            transforms.Resize((224, 224)),
+            # p.torch_transform(),
+            transforms.Resize((img_size, img_size)),
             transforms.RandomHorizontalFlip(),
             transforms.ColorJitter(brightness=0.2,
                                    contrast=0.2,
@@ -90,7 +91,7 @@ def create_dataset(label_type,
             transforms.Normalize(means[label_type], stds[label_type])
         ]),
         'test': transforms.Compose([
-            transforms.Resize((224, 224)),
+            transforms.Resize((img_size, img_size)),
             transforms.ToTensor(),
             transforms.Normalize(means[label_type], stds[label_type])
         ]),

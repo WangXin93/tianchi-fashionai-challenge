@@ -18,10 +18,6 @@ import ipdb
 
 
 parser = argparse.ArgumentParser(description='Write Answer')
-parser.add_argument('--model', type=str, default='resnet34', metavar='M',
-                    help='model name')
-parser.add_argument('--save_folder', type=str, default='resnet34-transfer', metavar='S',
-                    help='Subdir of ./log directory to save model.pth files')
 parser.add_argument('--answer', type=str, default='answer', metavar='A',
                     help='File name of answers relative to ./questions/ directory')
 args = parser.parse_args()
@@ -47,7 +43,40 @@ AttrKey = {
     'sleeve_length_labels':9,
 }
 
-saved_model = './log/' + args.save_folder + '/{}.pth'
+ModelKey = {
+    'coat_length_labels':'resnet18',
+    'collar_design_labels':'resnet18',
+    'lapel_design_labels':'resnet18',
+    'neck_design_labels':'inception_v3',
+    'neckline_design_labels':'resnet18',
+    'pant_length_labels':'resnet18',
+    'skirt_length_labels':'resnet18',
+    'sleeve_length_labels':'resnet18',
+}
+
+ImgSizeKey = {
+    'coat_length_labels':224,
+    'collar_design_labels':224,
+    'lapel_design_labels':224,
+    'neck_design_labels':299,
+    'neckline_design_labels':224,
+    'pant_length_labels':224,
+    'skirt_length_labels':224,
+    'sleeve_length_labels':224,
+}
+
+SaveFolderKey = {
+    'coat_length_labels':'resnet18-distort',
+    'collar_design_labels':'resnet18-distort',
+    'lapel_design_labels':'resnet18-distort',
+    'neck_design_labels':'spam',
+    'neckline_design_labels':'resnet18-distort',
+    'pant_length_labels':'resnet18-distort',
+    'skirt_length_labels':'resnet18-distort',
+    'sleeve_length_labels':'resnet18-distort',
+}
+
+saved_model = './log/{}/{}.pth'
 question_file = './questions/{}_{}.csv'
 root_dir = '/home/wangx/datasets/fashionAI/rank'
 answer = './questions/' + args.answer + '.csv'
@@ -60,19 +89,20 @@ for t in order:
                          root_dir=root_dir,
                          phase=['test'],
                          label_mode='?',
-                         shuffle=False)
+                         shuffle=False,
+                         img_size=ImgSizeKey[t])
     dataloader = out['dataloaders']['test']
 
     # Create CNN model
     use_gpu = torch.cuda.is_available()
-    model_conv = create_model(model_key=args.model,
+    model_conv = create_model(model_key=ModelKey[t],
                               pretrained=False,
                               num_of_classes=AttrKey[t],
                               use_gpu=use_gpu)
 
     print('start write {}...'.format(t))
     result = predict_model(model_conv,
-                           saved_model.format(t),
+                           saved_model.format(SaveFolderKey[t], t),
                            dataloader,
                            use_gpu)
 

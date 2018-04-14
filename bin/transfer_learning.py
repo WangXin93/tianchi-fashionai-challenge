@@ -3,7 +3,7 @@
 # python3 bin/transfer_learning.py --epochs 3 --pretrained True --save_folder spam --attribute neck_design_labels
 # 
 from utils.datasets import create_dataset
-from utils.train import train_model
+from utils.train import train_model, train_model_noval
 from utils.models import create_model
 import torchvision
 from torch import nn
@@ -31,6 +31,9 @@ parser.add_argument('--save_folder', type=str, default='resnet34', metavar='S',
 parser.add_argument('--pretrained', type=str, default='False', metavar='P', 
                     choices=['True', 'False'],
                     help='If True, only train last layer of model')
+parser.add_argument('--img_size', type=int, default=224, metavar='S',
+                    help='Size of input images.')
+
 args = parser.parse_args()
 
 
@@ -45,7 +48,10 @@ AttrKey = {
     'sleeve_length_labels':9, }
 
 # Create dataloader
-out = create_dataset(args.attribute)
+csv_file = './data/fashionAI/{}_{}.csv'
+out = create_dataset(args.attribute,
+                     csv_file=csv_file,
+                     img_size=args.img_size)
 dataloaders = out['dataloaders']
 dataset_sizes = out['dataset_sizes']
 
@@ -74,6 +80,13 @@ elif args.optimizer == 'Adam':
 # Decay LR by a factor of 0.1 every 7 epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
 
+# Make save folder
+save_folder = Path('log') / Path(args.save_folder)
+if not save_folder.exists():
+    save_folder.mkdir(parents=True)
+
+save_file = str(save_folder / Path(args.attribute+'.pth'))
+
 # Kick off the train
 model_conv = train_model(model_conv,
                          criterion,
@@ -82,13 +95,6 @@ model_conv = train_model(model_conv,
                          dataloaders,
                          dataset_sizes,
                          use_gpu,
+                         save_file,
                          num_epochs=args.epochs)
 
-# Save model parameters
-save_folder = Path('log') / Path(args.save_folder)
-if not save_folder.exists():
-    save_folder.mkdir(parents=True)
-
-# Save model
-torch.save(model_conv.state_dict(), str(save_folder / Path(args.attribute+'.pth')))
-print('Saved to {}'.format(str(save_folder / Path(args.attribute+'.pth'))))

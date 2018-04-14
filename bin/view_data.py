@@ -47,27 +47,21 @@ class FashionAttrsDataset(Dataset):
 
 
 p = Augmentor.Pipeline()
-# p.rotate(probability=0.5, max_left_rotation=10, max_right_rotation=10)
-p.random_distortion(probability=1.0, grid_width=4, grid_height=4, magnitude=20)
+p.rotate(probability=1.0, max_left_rotation=8, max_right_rotation=8)
+p.random_distortion(probability=1.0, grid_width=4, grid_height=4, magnitude=10)
 
 data_transforms = {
     'train': transforms.Compose([
         p.torch_transform(),
-        torchvision.transforms.RandomRotation(10),
-        torchvision.transforms.Resize((256)),
-        torchvision.transforms.RandomCrop(224),
+        torchvision.transforms.Resize((224, 224)),
         torchvision.transforms.RandomHorizontalFlip(),
-        torchvision.transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.4),
+        torchvision.transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.4, hue=0.4),
         torchvision.transforms.ToTensor(),
         transforms.Normalize([0.63699209,  0.60060385,  0.59294991], [ 0.29762986,  0.30413315,  0.30129263])
 
     ]),
     'val': transforms.Compose([
-        p.torch_transform(),
-        torchvision.transforms.Lambda(lambda x:x[0]),
         torchvision.transforms.Resize((224,224)),
-        torchvision.transforms.RandomHorizontalFlip(),
-        torchvision.transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=0.5),
         torchvision.transforms.ToTensor(),
         transforms.Normalize([0.63699209,  0.60060385,  0.59294991], [ 0.29762986,  0.30413315,  0.30129263])
     ]),

@@ -27,6 +27,8 @@ def create_model(model_key,
         model_conv = torchvision.models.resnet50(pretrained=True)
     elif model_key == 'resnet101':
         model_conv = torchvision.models.resnet101(pretrained=True)
+    elif model_key == 'inception_v3':
+        model_conv = torchvision.models.inception_v3(pretrained=True)
     else:
         raise ValueError("Unrecognized name of model {}".format(model_key))
 
