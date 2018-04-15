@@ -14,7 +14,6 @@ import numpy as np
 import time
 import argparse
 from pathlib import Path
-import ipdb
 
 
 parser = argparse.ArgumentParser(description='Write Answer')
