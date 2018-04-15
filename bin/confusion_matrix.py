@@ -52,9 +52,9 @@ ModelKey = {
     'lapel_design_labels':'inception_v3',
     'neck_design_labels':'inception_v3',
     'neckline_design_labels':'inception_v3',
-    'pant_length_labels':'resnet18',
-    'skirt_length_labels':'resnet18',
-    'sleeve_length_labels':'resnet18',
+    'pant_length_labels':'inception_v3',
+    'skirt_length_labels':'inception_v3',
+    'sleeve_length_labels':'inception_v3',
 }
 
 ImgSizeKey = {
@@ -63,44 +63,22 @@ ImgSizeKey = {
     'lapel_design_labels':299,
     'neck_design_labels':299,
     'neckline_design_labels':299,
-    'pant_length_labels':224,
-    'skirt_length_labels':224,
-    'sleeve_length_labels':224,
+    'pant_length_labels':299,
+    'skirt_length_labels':299,
+    'sleeve_length_labels':299,
 }
 
 SaveFolderKey = {
     'coat_length_labels':'resnet18-distort',
-    'collar_design_labels':'spam',
+    'collar_design_labels':'best',
     'lapel_design_labels':'spam',
     'neck_design_labels':'spam',
     'neckline_design_labels':'spam',
-    'pant_length_labels':'resnet18-distort',
-    'skirt_length_labels':'resnet18-distort',
-    'sleeve_length_labels':'resnet18-distort',
+    'pant_length_labels':'spam',
+    'skirt_length_labels':'spam',
+    'sleeve_length_labels':'spam',
 }
 
-#label_names = {'skirt_length_labels': ['Invisible', 'Short Length', 'Knee Length', 'Midi Length',
-#                                       'Ankle Length', 'Floor Length',],
-#               'coat_length_labels': ['Invisible', 'High Waist Length', 'Regular Length',
-#                                      'Long Length', 'Micro Length', 'Knee Length', 'Midi Length',
-#                                      'Ankle&Floor Length',],
-#               'collar_design_labels': ['Invisible', 'Shirt Collar', 'Peter Pan', 'Puritan Collar',
-#                                        'Rib Collar',],
-#               'lapel_design_labels': ['Invisible', 'Notched', 'Collarless', 'Shawl Collar', 
-#                                       'Plus Size Shawl',],
-#               'neck_design_labels': ['Invisible', 'Turtle Neck', 'Ruffle Semi-High Collar', 
-#                                      'Low Turtle Neck', 'Draped Collar',],
-#               'neckline_design_labels': ['Invisible', 'Strapless Neck', 'Deep V Neckline',
-#                                          'Straight Neck', 'V Neckline', 'Square Neckline',
-#                                          'Off Shoulder', 'Round Neckline', 'Sweat Heart Neck',
-#                                          'One Shoulder Neckline',] ,
-#               'pant_length_labels': ['Invisible', 'Short Pant', 'Mid Length', '3/4 Length',
-#                                      'Cropped Pant','Full Length',],
-#               'sleeve_length_labels': ['Invisible', 'Sleeveless', 'Cup Sleeves', 'Short Sleeves',
-#                                        'Elbow Sleeves', '3/4 Sleeves', 'Wrist Length',
-#                                        'Long Sleeves', 'Extra Long Sleeves',],
-#              }
-# Make it shorter
 label_names = {'skirt_length_labels': ['Invisible', 'Short', 'Knee', 'Midi',
                                        'Ankle', 'Floor',],
                'coat_length_labels': ['Invisible', 'High Waist', 'Regular',
@@ -130,8 +108,9 @@ root_dir='/home/wangx/datasets/fashionAI/base'
 
 labels_alphas = []
 results = []
+precisions = []
 
-fig, axs = plt.subplots(2, 4, figsize=(16, 8))
+fig, axs = plt.subplots(2, 4, figsize=(21, 12))
 
 # Iterate each attributes
 for idx, t in enumerate(order):
@@ -172,18 +151,22 @@ for idx, t in enumerate(order):
     cm = confusion_matrix(ground_truth, preds)
     print(cm)
     print('classification report ...')
-    print(classification_report(ground_truth, preds, target_names=label_names[t]))
+    cr = classification_report(ground_truth, preds, target_names=label_names[t])
+    print(cr)
+    precision = cr.splitlines()[-1].split()[3]
     print('Ali AP metric score ...')
-    print(AP(result, labels_alpha))
+    ap = AP(result, labels_alpha)
+    print(ap)
     print('*'*70 + '\n')
 
     # Save result for mAP
     results.append(result)
     labels_alphas.append(labels_alpha)
+    precisions.append(float(precision))
 
     # Draw heatmap
     ax = axs[idx//4, idx%4]
-    ax.set_title(t)
+    ax.set_title('{}:{}:{:.2f}'.format(t, precision, ap))
     sns.heatmap(cm,
                 ax=ax,
                 xticklabels=label_names[t],
@@ -191,6 +174,9 @@ for idx, t in enumerate(order):
                 annot=True,
                 cbar=False,
                 fmt='d')
+
+print('Mean basic precision ...')
+print(sum(precisions) / len(precisions))
 
 print('Ali mAP metric score ...')
 print(mAP(results, labels_alphas))

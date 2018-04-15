@@ -45,35 +45,35 @@ AttrKey = {
 
 ModelKey = {
     'coat_length_labels':'resnet18',
-    'collar_design_labels':'resnet18',
-    'lapel_design_labels':'resnet18',
+    'collar_design_labels':'inception_v3',
+    'lapel_design_labels':'inception_v3',
     'neck_design_labels':'inception_v3',
-    'neckline_design_labels':'resnet18',
-    'pant_length_labels':'resnet18',
-    'skirt_length_labels':'resnet18',
-    'sleeve_length_labels':'resnet18',
+    'neckline_design_labels':'inception_v3',
+    'pant_length_labels':'inception_v3',
+    'skirt_length_labels':'inception_v3',
+    'sleeve_length_labels':'inception_v3',
 }
 
 ImgSizeKey = {
     'coat_length_labels':224,
-    'collar_design_labels':224,
-    'lapel_design_labels':224,
+    'collar_design_labels':299,
+    'lapel_design_labels':299,
     'neck_design_labels':299,
-    'neckline_design_labels':224,
-    'pant_length_labels':224,
-    'skirt_length_labels':224,
-    'sleeve_length_labels':224,
+    'neckline_design_labels':299,
+    'pant_length_labels':299,
+    'skirt_length_labels':299,
+    'sleeve_length_labels':299,
 }
 
 SaveFolderKey = {
     'coat_length_labels':'resnet18-distort',
-    'collar_design_labels':'resnet18-distort',
-    'lapel_design_labels':'resnet18-distort',
+    'collar_design_labels':'best',
+    'lapel_design_labels':'spam',
     'neck_design_labels':'spam',
-    'neckline_design_labels':'resnet18-distort',
-    'pant_length_labels':'resnet18-distort',
-    'skirt_length_labels':'resnet18-distort',
-    'sleeve_length_labels':'resnet18-distort',
+    'neckline_design_labels':'spam',
+    'pant_length_labels':'spam',
+    'skirt_length_labels':'spam',
+    'sleeve_length_labels':'spam',
 }
 
 saved_model = './log/{}/{}.pth'

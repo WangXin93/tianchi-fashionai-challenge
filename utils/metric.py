@@ -50,8 +50,8 @@ def AP(preds, labels):
         result of threshold from 0 to 1.
     """
     outs = []
-    max_t = np.max(preds)
-    for threshold in np.linspace(0, max_t, endpoint=False):
+    thredholds = np.max(preds, axis=1)
+    for threshold in thredholds:
         out = evaluate(preds, labels, threshold, verbose=False)
         outs.append(out)
     return sum(outs) / len(outs)
