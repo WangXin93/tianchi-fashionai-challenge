@@ -33,6 +33,8 @@ parser.add_argument('--pretrained', type=str, default='False', metavar='P',
                     help='If True, only train last layer of model')
 parser.add_argument('--img_size', type=int, default=224, metavar='S',
                     help='Size of input images.')
+parser.add_argument('--batch_size', type=int, default=32, metavar='B',
+                    help='Batch number of input images')
 
 args = parser.parse_args()
 
@@ -51,7 +53,8 @@ AttrKey = {
 csv_file = './data/fashionAI/{}_{}.csv'
 out = create_dataset(args.attribute,
                      csv_file=csv_file,
-                     img_size=args.img_size)
+                     img_size=args.img_size, 
+                     batch_size=args.batch_size)
 dataloaders = out['dataloaders']
 dataset_sizes = out['dataset_sizes']
 
@@ -60,7 +63,7 @@ use_gpu = torch.cuda.is_available()
 model_conv = create_model(model_key=args.model,
                           pretrained=eval(args.pretrained),
                           num_of_classes=AttrKey[args.attribute],
-                          use_gpu=use_gpu)
+                          use_gpu=use_gpu,)
 
 criterion = nn.CrossEntropyLoss()
 

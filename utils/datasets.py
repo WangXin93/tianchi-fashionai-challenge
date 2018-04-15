@@ -60,7 +60,8 @@ def create_dataset(label_type,
                    phase = ['train', 'test'],
                    label_mode='index',
                    shuffle=True,
-                   img_size=224):
+                   img_size=224,
+                   batch_size=32):
     """Create dataset, dataloader for train and test
 
     Args: label_type (str): Type of label
@@ -107,7 +108,7 @@ def create_dataset(label_type,
                                                 mode=label_mode)
 
         dataloaders[x] = DataLoader(image_datasets[x],
-                                    batch_size=32,
+                                    batch_size=batch_size,
                                     shuffle=shuffle,
                                     num_workers=multiprocessing.cpu_count())
 

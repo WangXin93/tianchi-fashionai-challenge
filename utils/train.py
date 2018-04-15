@@ -13,7 +13,8 @@ def train_model(model,
                 dataset_sizes,
                 use_gpu,
                 save_file,
-                num_epochs=2):
+                num_epochs=2,
+                verbose=True):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -34,6 +35,7 @@ def train_model(model,
             running_loss = 0.0
             running_corrects = 0
 
+            batch_num = 0
             # Iterate over data.
             for data in dataloaders[phase]:
                 # get the inputs
@@ -52,10 +54,11 @@ def train_model(model,
 
                 # forward
                 # inception_v3
-                if phase == 'train':
-                    outputs, aux = model(inputs)
-                else:
-                    outputs = model(inputs)
+#                if phase == 'train':
+#                    outputs, aux = model(inputs)
+#                else:
+#                    outputs = model(inputs)
+                outputs = model(inputs)
 
                 _, preds = torch.max(outputs.data, 1)
                 loss = criterion(outputs, labels)
@@ -64,6 +67,10 @@ def train_model(model,
                 if phase == 'train':
                     loss.backward()
                     optimizer.step()
+
+                    if batch_num % 20 == 0 and verbose:
+                        print('batch: #{}, loss = {}'.format(batch_num, loss.data[0]))
+                    batch_num += 1
 
                 # statistics
                 running_loss += loss.data[0] * inputs.size(0)
