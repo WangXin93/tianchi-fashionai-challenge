@@ -7,7 +7,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import torchvision
 import numpy as np
-import Augmentor
+# import Augmentor
 
 
 class FashionAttrsDataset(Dataset):
@@ -46,9 +46,9 @@ class FashionAttrsDataset(Dataset):
         return sample
 
 
-p = Augmentor.Pipeline()
-p.rotate(probability=1.0, max_left_rotation=8, max_right_rotation=8)
-p.random_distortion(probability=1.0, grid_width=4, grid_height=4, magnitude=10)
+#p = Augmentor.Pipeline()
+#p.rotate(probability=1.0, max_left_rotation=8, max_right_rotation=8)
+#p.random_distortion(probability=1.0, grid_width=4, grid_height=4, magnitude=10)
 
 data_transforms = {
     'train': transforms.Compose([
