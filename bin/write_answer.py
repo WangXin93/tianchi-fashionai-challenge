@@ -43,37 +43,38 @@ AttrKey = {
 }
 
 ModelKey = {
-    'coat_length_labels':'resnet18',
+    'coat_length_labels':'inceptionresnetv2',
     'collar_design_labels':'inception_v3',
     'lapel_design_labels':'inception_v3',
-    'neck_design_labels':'inception_v3',
+    'neck_design_labels':'inceptionresnetv2',
     'neckline_design_labels':'inception_v3',
     'pant_length_labels':'inception_v3',
-    'skirt_length_labels':'inception_v3',
+    'skirt_length_labels':'resnet18',
     'sleeve_length_labels':'inception_v3',
 }
 
 ImgSizeKey = {
-    'coat_length_labels':224,
+    'coat_length_labels':299,
     'collar_design_labels':299,
     'lapel_design_labels':299,
     'neck_design_labels':299,
     'neckline_design_labels':299,
     'pant_length_labels':299,
-    'skirt_length_labels':299,
+    'skirt_length_labels':224,
     'sleeve_length_labels':299,
 }
 
 SaveFolderKey = {
-    'coat_length_labels':'resnet18-distort',
+    'coat_length_labels':'inceptionresnetv2',
     'collar_design_labels':'best',
-    'lapel_design_labels':'spam',
-    'neck_design_labels':'spam',
-    'neckline_design_labels':'spam',
-    'pant_length_labels':'spam',
-    'skirt_length_labels':'spam',
-    'sleeve_length_labels':'spam',
+    'lapel_design_labels':'inception_v3-zero',
+    'neck_design_labels':'inceptionresnetv2',
+    'neckline_design_labels':'inception_v3-zero',
+    'pant_length_labels':'inception_v3-zero',
+    'skirt_length_labels':'resnet18-distort',
+    'sleeve_length_labels':'inception_v3-zero',
 }
+
 
 saved_model = './log/{}/{}.pth'
 question_file = './questions/{}_{}.csv'
@@ -89,7 +90,8 @@ for t in order:
                          phase=['test'],
                          label_mode='?',
                          shuffle=False,
-                         img_size=ImgSizeKey[t])
+                         img_size=ImgSizeKey[t],
+                         batch_size=8)
     dataloader = out['dataloaders']['test']
 
     # Create CNN model

@@ -73,3 +73,28 @@ def mAP(preds_list, labels_list):
         ap = AP(preds, labels)
         aps.append(ap)
     return sum(aps) / len(aps)
+
+
+def calculate_ap(labels, outputs):
+    """calculate ap of batch samples
+
+    # https://github.com/hetong007/Gluon-FashionAI-Attributes/blob/master/FashionAI-Attributes-Skirt.ipynb
+
+    Args:
+        labels: list of ground-truth labels like [0,3,1,...,4]
+        outputs: 2-D array, first dim is batch size, second size 
+            is number of classes.
+
+    Returns:
+        ap: ap value of batch samples
+        cnt: Count of batch samples
+    """
+    cnt = 0
+    ap = 0.
+    for lb, op in zip(labels, outputs):
+        op_argsort = np.argsort(op)[::-1]
+        lb_int = int(lb)
+        ap += 1.0 / (1+list(op_argsort).index(lb_int))
+        cnt += 1
+    return ap, cnt
+

@@ -2,6 +2,8 @@ import time
 import copy
 import torch
 from torch.autograd import Variable
+from .metric import calculate_ap
+import ipdb
 
 
 def train_model(model,
@@ -17,7 +19,7 @@ def train_model(model,
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
-    best_acc = 0.0
+    best_ap = 0.0
 
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -33,6 +35,8 @@ def train_model(model,
 
             running_loss = 0.0
             running_corrects = 0
+            AP = 0.0
+            AP_cnt = 0
 
             batch_num = 0
             # Iterate over data.
@@ -59,6 +63,14 @@ def train_model(model,
 #                    outputs = model(inputs)
                 outputs = model(inputs)
 
+                # Get softmax scores
+                probs = torch.nn.functional.softmax(outputs)
+                # Convert to cpu
+                probs = probs.data.cpu().numpy()
+                ap, cnt = calculate_ap(labels, probs)
+                AP += ap
+                AP_cnt += cnt
+
                 _, preds = torch.max(outputs.data, 1)
                 loss = criterion(outputs, labels)
 
@@ -77,13 +89,14 @@ def train_model(model,
 
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects / dataset_sizes[phase]
+            epoch_ap = AP / AP_cnt
 
-            print('{} Loss: {:.4f} Acc: {:.4f}'.format(
-                phase, epoch_loss, epoch_acc))
+            print('{} Loss: {:.4f} Acc: {:.4f} AP: {:.4f}'.format(
+                phase, epoch_loss, epoch_acc, epoch_ap))
 
             # deep copy the model
-            if phase == 'test' and epoch_acc > best_acc:
-                best_acc = epoch_acc
+            if phase == 'test' and epoch_ap > best_ap:
+                best_ap = epoch_ap
                 best_model_wts = copy.deepcopy(model.state_dict())
                 # Save model
                 torch.save(model.state_dict(), save_file)

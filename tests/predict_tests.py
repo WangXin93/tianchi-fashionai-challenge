@@ -66,6 +66,6 @@ def predict_tests():
     if use_gpu:
         model_conv = model_conv.cuda()
 
-    saved_model = '/home/wangx/project/torchfashion/log/resnet34-transfer/coat_length_labels.pth'
+    saved_model = './log/resnet34-transfer/coat_length_labels.pth'
     result = predict_model(model_conv, saved_model, dataloader, use_gpu)
     assert_equal(len(result), 1453)

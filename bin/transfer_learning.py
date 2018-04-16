@@ -18,23 +18,27 @@ from pathlib import Path
 
 
 parser = argparse.ArgumentParser(description='FashionAI')
-parser.add_argument('--model', type=str, default='resnet34', metavar='M',
+parser.add_argument('--model', type=str, default='resnet18', metavar='M',
                     help='model name')
 parser.add_argument('--optimizer', type=str, default='Adam', metavar='O',
                     help='Chosed optimizer')
-parser.add_argument('--attribute', type=str, default='coat_length_labels', metavar='A',
+parser.add_argument('--attribute', type=str, default='neck_design_labels', metavar='A',
                     help='fashion attribute (default: coat_length_labels)')
 parser.add_argument('--epochs', type=int, default=50, metavar='N',
                     help='number of epochs to train (default: 50)')
-parser.add_argument('--save_folder', type=str, default='resnet34', metavar='S',
+parser.add_argument('--save_folder', type=str, default='spam', metavar='S',
                     help='Subdir of ./log directory to save model.pth files')
 parser.add_argument('--pretrained', type=str, default='False', metavar='P', 
                     choices=['True', 'False'],
                     help='If True, only train last layer of model')
+parser.add_argument('--trained_model', type=str, default=None, metavar='M', 
+                    help='File name of a trained model before.')
 parser.add_argument('--img_size', type=int, default=224, metavar='S',
                     help='Size of input images.')
 parser.add_argument('--batch_size', type=int, default=32, metavar='B',
                     help='Batch number of input images')
+parser.add_argument('--verbose', action='store_true',
+                    help='If use verbose flag, more detailed training will be printed')
 
 args = parser.parse_args()
 
@@ -90,6 +94,10 @@ if not save_folder.exists():
 
 save_file = str(save_folder / Path(args.attribute+'.pth'))
 
+# Load trained model before if define it
+if args.trained_model:
+    print("Load trained model from {}".format(args.trained_model))
+    model_conv.load_state_dict(torch.load(args.trained_model))
 # Kick off the train
 model_conv = train_model(model_conv,
                          criterion,
@@ -99,5 +107,6 @@ model_conv = train_model(model_conv,
                          dataset_sizes,
                          use_gpu,
                          save_file,
-                         num_epochs=args.epochs)
+                         num_epochs=args.epochs,
+                         verbose=args.verbose)
 

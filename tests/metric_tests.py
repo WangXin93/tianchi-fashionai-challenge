@@ -29,10 +29,10 @@ def metric_tests():
     assert_almost_equal(evaluate(preds, labels), 0.4444444)
 
     # Test AP
-    assert_almost_equal(AP(preds, labels), 0.4959444)
+    assert_almost_equal(AP(preds, labels), 0.4921825)
 
     # Test mAP
     preds_list = [preds, preds]
     labels_list = [labels, labels]
-    assert_almost_equal(mAP(preds_list, labels_list), 0.4959444)
+    assert_almost_equal(mAP(preds_list, labels_list), 0.4921825)
 

@@ -10,4 +10,4 @@
 # sleeve_length_labels 
 
 
-python3 bin/transfer_learning.py --model inceptionresnetv2 --attribute coat_length_labels --epochs 50 --save_folder spam --img_size 299 --batch_size 32\
+python3 bin/transfer_learning.py --model inceptionresnetv2 --attribute neck_design_labels --epochs 50 --save_folder spam --img_size 299 --batch_size 8 --verbose

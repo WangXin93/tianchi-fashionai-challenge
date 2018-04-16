@@ -43,6 +43,7 @@ class FashionAttrsDataset(Dataset):
             image = self.transform(image)
 
         category = self.fashion_frame.iloc[idx, 2]
+        alpha = category
         if self.mode == '?':
             category = '?'
         elif self.mode == 'index':
@@ -50,7 +51,7 @@ class FashionAttrsDataset(Dataset):
         elif self.mode == 'alpha':
             category = category
 
-        sample = {'image': image, 'category': category}
+        sample = {'image': image, 'category': category ,'alpha': alpha}
         return sample
 
 
@@ -109,7 +110,7 @@ def create_dataset(label_type,
 
         dataloaders[x] = DataLoader(image_datasets[x],
                                     batch_size=batch_size,
-                                    shuffle=shuffle,
+                                    shuffle=shuffle and x=='train',
                                     num_workers=multiprocessing.cpu_count())
 
         dataset_sizes[x] = len(image_datasets[x])

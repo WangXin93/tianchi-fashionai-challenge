@@ -46,36 +46,36 @@ AttrKey = {
 }
 
 ModelKey = {
-    'coat_length_labels':'resnet18',
+    'coat_length_labels':'inceptionresnetv2',
     'collar_design_labels':'inception_v3',
     'lapel_design_labels':'inception_v3',
-    'neck_design_labels':'inception_v3',
+    'neck_design_labels':'inceptionresnetv2',
     'neckline_design_labels':'inception_v3',
     'pant_length_labels':'inception_v3',
-    'skirt_length_labels':'inception_v3',
+    'skirt_length_labels':'resnet18',
     'sleeve_length_labels':'inception_v3',
 }
 
 ImgSizeKey = {
-    'coat_length_labels':224,
+    'coat_length_labels':299,
     'collar_design_labels':299,
     'lapel_design_labels':299,
     'neck_design_labels':299,
     'neckline_design_labels':299,
     'pant_length_labels':299,
-    'skirt_length_labels':299,
+    'skirt_length_labels':224,
     'sleeve_length_labels':299,
 }
 
 SaveFolderKey = {
-    'coat_length_labels':'resnet18-distort',
+    'coat_length_labels':'inceptionresnetv2',
     'collar_design_labels':'best',
-    'lapel_design_labels':'spam',
-    'neck_design_labels':'spam',
-    'neckline_design_labels':'spam',
-    'pant_length_labels':'spam',
-    'skirt_length_labels':'spam',
-    'sleeve_length_labels':'spam',
+    'lapel_design_labels':'inception_v3-zero',
+    'neck_design_labels':'inceptionresnetv2',
+    'neckline_design_labels':'inception_v3-zero',
+    'pant_length_labels':'inception_v3-zero',
+    'skirt_length_labels':'resnet18-distort',
+    'sleeve_length_labels':'inception_v3-zero',
 }
 
 label_names = {'skirt_length_labels': ['Invisible', 'Short', 'Knee', 'Midi',
@@ -119,7 +119,8 @@ for idx, t in enumerate(order):
                          phase=['test'],
                          label_mode='alpha',
                          shuffle=False,
-                         img_size=ImgSizeKey[t])
+                         img_size=ImgSizeKey[t],
+                         batch_size=8)
     dataloader = out['dataloaders']['test']
 
     use_gpu = torch.cuda.is_available()
@@ -150,7 +151,7 @@ for idx, t in enumerate(order):
     cm = confusion_matrix(ground_truth, preds)
     print(cm)
     print('classification report ...')
-    cr = classification_report(ground_truth, preds, target_names=label_names[t])
+    cr = classification_report(ground_truth, preds, target_names=label_names[t], digits=4)
     print(cr)
     precision = cr.splitlines()[-1].split()[3]
     print('Ali AP metric score ...')
@@ -165,7 +166,7 @@ for idx, t in enumerate(order):
 
     # Draw heatmap
     ax = axs[idx//4, idx%4]
-    ax.set_title('{}:{}:{:.2f}'.format(t, precision, ap))
+    ax.set_title('{}:{:.4f}:{:.4f}'.format(t, precision, ap))
     sns.heatmap(cm,
                 ax=ax,
                 xticklabels=label_names[t],
