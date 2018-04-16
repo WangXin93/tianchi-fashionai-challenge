@@ -69,9 +69,9 @@ ImgSizeKey = {
 
 SaveFolderKey = {
     'coat_length_labels':'inceptionresnetv2',
-    'collar_design_labels':'best',
+    'collar_design_labels':'inception_v3-zero',
     'lapel_design_labels':'inception_v3-zero',
-    'neck_design_labels':'inceptionresnetv2',
+    'neck_design_labels':'spam',
     'neckline_design_labels':'inception_v3-zero',
     'pant_length_labels':'inception_v3-zero',
     'skirt_length_labels':'resnet18-distort',
@@ -166,7 +166,7 @@ for idx, t in enumerate(order):
 
     # Draw heatmap
     ax = axs[idx//4, idx%4]
-    ax.set_title('{}:{:.4f}:{:.4f}'.format(t, precision, ap))
+    ax.set_title('{}:{}:{:.4f}'.format(t, precision, ap))
     sns.heatmap(cm,
                 ax=ax,
                 xticklabels=label_names[t],
