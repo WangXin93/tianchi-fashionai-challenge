@@ -47,11 +47,11 @@ AttrKey = {
 
 ModelKey = {
     'coat_length_labels':'inceptionresnetv2',
-    'collar_design_labels':'inception_v3',
-    'lapel_design_labels':'inception_v3',
+    'collar_design_labels':'inceptionresnetv2',
+    'lapel_design_labels':'inceptionresnetv2',
     'neck_design_labels':'inceptionresnetv2',
     'neckline_design_labels':'inception_v3',
-    'pant_length_labels':'inception_v3',
+    'pant_length_labels':'inceptionresnetv2',
     'skirt_length_labels':'resnet18',
     'sleeve_length_labels':'inception_v3',
 }
@@ -68,12 +68,12 @@ ImgSizeKey = {
 }
 
 SaveFolderKey = {
-    'coat_length_labels':'inceptionresnetv2',
-    'collar_design_labels':'inception_v3-zero',
-    'lapel_design_labels':'inception_v3-zero',
-    'neck_design_labels':'spam',
+    'coat_length_labels':'inceptionresnetv2-aws',
+    'collar_design_labels':'inceptionresnetv2',
+    'lapel_design_labels':'inceptionresnetv2',
+    'neck_design_labels':'inceptionresnetv2-aws',
     'neckline_design_labels':'inception_v3-zero',
-    'pant_length_labels':'inception_v3-zero',
+    'pant_length_labels':'inceptionresnetv2',
     'skirt_length_labels':'resnet18-distort',
     'sleeve_length_labels':'inception_v3-zero',
 }

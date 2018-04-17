@@ -12,22 +12,15 @@ def mkdir_if_not_exist(path):
         os.makedirs(os.path.join(*path))
 
 
-def main(root_dir='/home/wangx/datasets/fashionAI/base',
-         task='neck_design_labels',
-         csv_file='/home/wangx/datasets/fashionAI/base/Annotations/label.csv'):
+def crop(task='neck_design_labels',
+         root_dir='/home/ubuntu/datasets/base',
+         csv_file='/home/ubuntu/datasets/base/Annotations/label.csv'):
     """
     Args:
         root_dir: Directory with Images folder
         task: Task of images to be cropped
-        csv_file: cav file stores all images paths
+        csv_file: csv file stores all images paths
     """
-
-    # 裙子任务的目录名
-    task = 'neck_design_labels'
-    # 热身数据与训练数据的图片标记文件
-    #warmup_label_dir = 'data/web/Annotations/skirt_length_labels.csv'
-    base_label_dir = '/home/wangx/datasets/fashionAI/base/Annotations/label.csv'
-
     image_path = []
 
     #mkdir_if_not_exist(['data/look/data/base/Images', task])
@@ -47,14 +40,22 @@ def main(root_dir='/home/wangx/datasets/fashionAI/base',
             count += 1
             box = (0,0,img.size[0],img.size[0])
             region = img.crop(box)
-            # region.save(path)
+            region.save(path)
         elif img.size[0] > img.size[1]:
             count += 1
             crop = transforms.CenterCrop(img.size[1])
             region = crop(img)
-            # region.save(path)
+            region.save(path)
 
     print("Totally {} image are processed".format(count))
 
 if __name__ == "__main__":
-    main()
+    tasks = ['neck_design_labels',
+             'collar_design_labels',
+             'lapel_design_labels',
+             'neckline_design_labels']
+    root_dir = os.path.expanduser('~/datasets/fashionAI/base/')
+    csv_file = os.path.expanduser('~/datasets/fashionAI/base/Annotations/label.csv')
+    for task in tasks:
+        print("Start crop {}...".format(task))
+        crop(task, root_dir, csv_file)

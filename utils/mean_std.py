@@ -28,6 +28,10 @@ stds = {'coat_length_labels': np.array([ 0.30534767,  0.31214217,  0.31014501]),
         'sleeve_length_labels': np.array([ 0.30389032,  0.30909504,  0.30573339])}
 
 
+#means = {'lapel_design_labels': array([0.63445952, 0.59285903, 0.58060211]), 'neck_design_labels': array([0.63725294, 0.5854958 , 0.56770811]), 'neckline_design_labels': array([0.64966144, 0.60498095, 0.59050418]), 'collar_design_labels': array([0.64030149, 0.59841229, 0.58415665])}
+#stds = {'lapel_design_labels': array([0.309214  , 0.31720433, 0.31450665]), 'neck_design_labels': array([0.30443088, 0.31420974, 0.31130531]), 'neckline_design_labels': array([0.30329278, 0.30832888, 0.30555344]), 'collar_design_labels': array([0.30842653, 0.31389776, 0.30979971])}
+
+
 csv_file = '/home/wangx/project/torchfashion/data/fashionAI/{}_train.csv'
 root_dir = '/home/wangx/datasets/fashionAI/base'
 
@@ -66,7 +70,6 @@ def main():
     types = ['skirt_length_labels', 'collar_design_labels', 'neckline_design_labels',
              'sleeve_length_labels', 'neck_design_labels', 'coat_length_labels',
              'lapel_design_labels', 'pant_length_labels']
-
     means= {}
     stds = {}
     for t in types:
