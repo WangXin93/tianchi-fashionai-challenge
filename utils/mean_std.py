@@ -28,8 +28,33 @@ stds = {'coat_length_labels': np.array([ 0.30534767,  0.31214217,  0.31014501]),
         'sleeve_length_labels': np.array([ 0.30389032,  0.30909504,  0.30573339])}
 
 
-#means = {'lapel_design_labels': array([0.63445952, 0.59285903, 0.58060211]), 'neck_design_labels': array([0.63725294, 0.5854958 , 0.56770811]), 'neckline_design_labels': array([0.64966144, 0.60498095, 0.59050418]), 'collar_design_labels': array([0.64030149, 0.59841229, 0.58415665])}
-#stds = {'lapel_design_labels': array([0.309214  , 0.31720433, 0.31450665]), 'neck_design_labels': array([0.30443088, 0.31420974, 0.31130531]), 'neckline_design_labels': array([0.30329278, 0.30832888, 0.30555344]), 'collar_design_labels': array([0.30842653, 0.31389776, 0.30979971])}
+# 剪裁版最后结果, 修改了design类型
+#means = {'coat_length_labels': np.array([ 0.62499291,  0.58789091,  0.57388757]),
+#         'neckline_design_labels': np.array([0.64966144, 0.60498095, 0.59050418]),
+#         'neck_design_labels': np.array([0.63725294, 0.5854958 , 0.56770811]),
+#         'skirt_length_labels': np.array([ 0.63699209,  0.60060385,  0.59294991]),
+#         'lapel_design_labels': np.array([0.63445952, 0.59285903, 0.58060211]),
+#         'collar_design_labels': np.array([0.64030149, 0.59841229, 0.58415665]),
+#         'pant_length_labels': np.array([ 0.64202558,  0.61319513,  0.60319308]),
+#         'sleeve_length_labels': np.array([ 0.6470659 ,  0.60789422,  0.59796069])}
+#
+#stds = {'coat_length_labels': np.array([ 0.30534767,  0.31214217,  0.31014501]),
+#        'neckline_design_labels': np.array([0.30329278, 0.30832888, 0.30555344]),
+#        'neck_design_labels': np.array([0.30443088, 0.31420974, 0.31130531]),
+#        'skirt_length_labels': np.array([ 0.29762986,  0.30413315,  0.30129263]),
+#        'lapel_design_labels': np.array([0.309214  , 0.31720433, 0.31450665]),
+#        'collar_design_labels': np.array([0.30842653, 0.31389776, 0.30979971]),
+#        'pant_length_labels': np.array([ 0.3016225 ,  0.30119881,  0.29788693]),
+#        'sleeve_length_labels': np.array([ 0.30389032,  0.30909504,  0.30573339])}
+
+#means = {'lapel_design_labels': array([0.63445952, 0.59285903, 0.58060211]),
+#         'neck_design_labels': array([0.63725294, 0.5854958 , 0.56770811]),
+#         'neckline_design_labels': array([0.64966144, 0.60498095, 0.59050418]),
+#         'collar_design_labels': array([0.64030149, 0.59841229, 0.58415665])}
+#stds = {'lapel_design_labels': array([0.309214  , 0.31720433, 0.31450665]),
+#        'neck_design_labels': array([0.30443088, 0.31420974, 0.31130531]),
+#        'neckline_design_labels': array([0.30329278, 0.30832888, 0.30555344]),
+#        'collar_design_labels': array([0.30842653, 0.31389776, 0.30979971])}
 
 
 csv_file = '/home/wangx/project/torchfashion/data/fashionAI/{}_train.csv'
