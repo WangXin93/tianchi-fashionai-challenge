@@ -52,8 +52,13 @@ class FashionAttrsDataset(Dataset):
 
 data_transforms = {
     'train': transforms.Compose([
-        p.torch_transform(),
+#        p.torch_transform(),
+        torchvision.transforms.RandomRotation(10),
         torchvision.transforms.Resize((224, 224)),
+        torchvision.transforms.ColorJitter(brightness=32./255.,
+                                           contrast=0.5,
+                                           saturation=0.5,
+                                           hue=0.2),
         torchvision.transforms.RandomHorizontalFlip(),
         torchvision.transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.4, hue=0.4),
         torchvision.transforms.ToTensor(),
@@ -94,7 +99,7 @@ def imshow(inp, ax, title=None):
     ax.imshow(inp)
     if title is not None:
         ax.set_title(title)
-    # plt.pause(1)  # pause a bit so that plots are updated
+    #plt.pause(1)  # pause a bit so that plots are updated
 
 
 # Get a batch of training data

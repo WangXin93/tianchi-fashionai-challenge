@@ -57,11 +57,11 @@ def train_model(model,
 
                 # forward
                 # inception_v3
-#                if phase == 'train':
-#                    outputs, aux = model(inputs)
-#                else:
-#                    outputs = model(inputs)
-                outputs = model(inputs)
+                if phase == 'train':
+                    outputs, aux = model(inputs)
+                else:
+                    outputs = model(inputs)
+#                outputs = model(inputs)
 
                 # Get softmax scores
                 probs = torch.nn.functional.softmax(outputs)

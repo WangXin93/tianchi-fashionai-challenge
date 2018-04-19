@@ -50,7 +50,7 @@ ModelKey = {
     'neckline_design_labels':'inception_v3',
     'pant_length_labels':'inceptionresnetv2',
     'skirt_length_labels':'resnet18',
-    'sleeve_length_labels':'inception_v3',
+    'sleeve_length_labels':'inceptionresnetv2',
 }
 
 ImgSizeKey = {
@@ -70,16 +70,16 @@ SaveFolderKey = {
     'lapel_design_labels':'inceptionresnetv2',
     'neck_design_labels':'inceptionresnetv2-aws',
     'neckline_design_labels':'inception_v3-zero',
-    'pant_length_labels':'inceptionresnetv2',
+    'pant_length_labels':'inceptionresnetv2-aws',
     'skirt_length_labels':'resnet18-distort',
-    'sleeve_length_labels':'inception_v3-zero',
+    'sleeve_length_labels':'inceptionresnetv2-aws',
 }
 
 
 saved_model = './log/{}/{}.pth'
-question_file = './questions/{}_{}.csv'
-root_dir = '/home/wangx/datasets/fashionAI/rank'
-answer = './questions/' + args.answer + '.csv'
+question_file = './questions_b/{}_{}.csv'
+root_dir = '/home/wangx/datasets/fashionAI/z_rank'
+answer = './questions_b/' + args.answer + '.csv'
 
 # Iterate each attributes
 for t in order:
