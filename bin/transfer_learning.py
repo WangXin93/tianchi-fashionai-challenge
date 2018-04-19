@@ -54,7 +54,7 @@ AttrKey = {
     'sleeve_length_labels':9, }
 
 # Create dataloader
-csv_file = './data/fashionAI/{}_{}.csv'
+csv_file = './data/fashionAI_b/{}_{}.csv'
 out = create_dataset(args.attribute,
                      csv_file=csv_file,
                      img_size=args.img_size, 
