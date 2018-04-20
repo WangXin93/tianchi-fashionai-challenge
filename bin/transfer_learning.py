@@ -57,8 +57,10 @@ AttrKey = {
 
 # Create dataloader
 csv_file = './data/' + args.csv_folder + '/{}_{}.csv'
+root_dir = '/home/ubuntu/datasets/base'
 out = create_dataset(args.attribute,
                      csv_file=csv_file,
+                     root_dir=root_dir,
                      img_size=args.img_size, 
                      batch_size=args.batch_size)
 dataloaders = out['dataloaders']
