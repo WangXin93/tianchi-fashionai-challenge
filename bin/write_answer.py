@@ -69,7 +69,7 @@ SaveFolderKey = {
     'collar_design_labels':'inceptionresnetv2',
     'lapel_design_labels':'inceptionresnetv2',
     'neck_design_labels':'inceptionresnetv2-aws',
-    'neckline_design_labels':'inception_v3-zero',
+    'neckline_design_labels':'inception_v3_b',
     'pant_length_labels':'inceptionresnetv2-aws',
     'skirt_length_labels':'resnet18-distort',
     'sleeve_length_labels':'inceptionresnetv2-aws',

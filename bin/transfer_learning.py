@@ -39,6 +39,8 @@ parser.add_argument('--batch_size', type=int, default=32, metavar='B',
                     help='Batch number of input images')
 parser.add_argument('--verbose', action='store_true',
                     help='If use verbose flag, more detailed training will be printed')
+parser.add_argument('--csv_folder', type=str, default='fashionAI', metavar='F',
+                    help='Folder path that stores csv file, which helps build 5-folds')
 
 args = parser.parse_args()
 
@@ -54,7 +56,7 @@ AttrKey = {
     'sleeve_length_labels':9, }
 
 # Create dataloader
-csv_file = './data/fashionAI_b/{}_{}.csv'
+csv_file = './data/' + args.csv_folder + '/{}_{}.csv'
 out = create_dataset(args.attribute,
                      csv_file=csv_file,
                      img_size=args.img_size, 
@@ -80,7 +82,7 @@ else:
 
 # Choose optimizer for training
 if args.optimizer == 'SGD':
-    optimizer_conv = optim.SGD(parameters_totrain, lr=0.001, momentum=0.9)
+    optimizer_conv = optim.SGD(parameters_totrain, lr=0.001, momentum=0.9, weight_decay=1e-4)
 elif args.optimizer == 'Adam':
     optimizer_conv = optim.Adam(parameters_totrain, lr=0.001)
 

@@ -57,11 +57,11 @@ def train_model(model,
 
                 # forward
                 # inception_v3
-                if phase == 'train':
-                    outputs, aux = model(inputs)
-                else:
-                    outputs = model(inputs)
-#                outputs = model(inputs)
+#                if phase == 'train':
+#                    outputs, aux = model(inputs)
+#                else:
+#                    outputs = model(inputs)
+                outputs = model(inputs)
 
                 # Get softmax scores
                 probs = torch.nn.functional.softmax(outputs)
@@ -95,7 +95,7 @@ def train_model(model,
                 phase, epoch_loss, epoch_acc, epoch_ap))
 
             # deep copy the model
-            if phase == 'test' and epoch_ap > best_ap:
+            if phase == 'test' and epoch_ap > best_ap and epoch > 0:
                 best_ap = epoch_ap
                 best_model_wts = copy.deepcopy(model.state_dict())
                 # Save model
