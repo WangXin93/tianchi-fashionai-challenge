@@ -14,6 +14,7 @@ import numpy as np
 import time
 import argparse
 from pathlib import Path
+import os
 
 
 parser = argparse.ArgumentParser(description='Write Answer')
@@ -47,7 +48,7 @@ ModelKey = {
     'collar_design_labels':'inceptionresnetv2',
     'lapel_design_labels':'inceptionresnetv2',
     'neck_design_labels':'inceptionresnetv2',
-    'neckline_design_labels':'inception_v3',
+    'neckline_design_labels':'inceptionresnetv2',
     'pant_length_labels':'inceptionresnetv2',
     'skirt_length_labels':'resnet18',
     'sleeve_length_labels':'inceptionresnetv2',
@@ -66,10 +67,10 @@ ImgSizeKey = {
 
 SaveFolderKey = {
     'coat_length_labels':'inceptionresnetv2-aws',
-    'collar_design_labels':'inceptionresnetv2',
-    'lapel_design_labels':'inceptionresnetv2',
+    'collar_design_labels':'inceptionresnetv2-aws',
+    'lapel_design_labels':'inceptionresnetv2-aws',
     'neck_design_labels':'inceptionresnetv2-aws',
-    'neckline_design_labels':'inception_v3_b',
+    'neckline_design_labels':'inceptionresnetv2-aws',
     'pant_length_labels':'inceptionresnetv2-aws',
     'skirt_length_labels':'resnet18-distort',
     'sleeve_length_labels':'inceptionresnetv2-aws',
@@ -80,6 +81,9 @@ saved_model = './log/{}/{}.pth'
 question_file = './questions_b/{}_{}.csv'
 root_dir = '/home/wangx/datasets/fashionAI/z_rank'
 answer = './questions_b/' + args.answer + '.csv'
+if os.path.exists(answer):
+    print('Path {} alreade exists, will be removed'.format(answer))
+    os.remove(answer)
 
 # Iterate each attributes
 for t in order:

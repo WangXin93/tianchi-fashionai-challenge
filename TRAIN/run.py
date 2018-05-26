@@ -3,7 +3,7 @@
 # python3 bin/transfer_learning.py --epochs 3 --pretrained True --save_folder spam --attribute neck_design_labels
 # 
 from utils.datasets import create_dataset
-from utils.train import train_model, train_model_noval
+from utils.train import train_model
 from utils.models import create_model
 import torchvision
 from torch import nn
@@ -56,9 +56,11 @@ AttrKey = {
     'sleeve_length_labels':9, }
 
 # Create dataloader
+root_dir = '/home/wangx/datasets/fashionAI/base/'
 csv_file = './data/' + args.csv_folder + '/{}_{}.csv'
 out = create_dataset(args.attribute,
                      csv_file=csv_file,
+                     root_dir=root_dir,
                      img_size=args.img_size, 
                      batch_size=args.batch_size)
 dataloaders = out['dataloaders']
